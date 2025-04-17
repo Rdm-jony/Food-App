@@ -3,6 +3,7 @@ import Login from "@/auth/Login";
 import Register from "@/auth/Register";
 import VerifyEmail from "@/auth/VerifyEmail";
 import HeroSection from "@/components/HeroSection";
+import Profile from "@/components/Profile";
 import MainLayout from "@/Layout/MainLayout";
 import { createBrowserRouter } from "react-router-dom";
 
@@ -14,6 +15,10 @@ export const router = createBrowserRouter([
             {
                 path: "/",
                 element: <HeroSection></HeroSection>
+            },
+            {
+                path: "/profile",
+                element: <Profile></Profile>
             }
         ]
     },
