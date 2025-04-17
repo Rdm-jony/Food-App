@@ -58,6 +58,7 @@ const Login = () => {
                 }
 
             </form>
+            <Link className="text-xs text-blue-600 mt-2" to='/forgetPass'>forget password?</Link>
             <Separator className="w-full my-5" />
             <p className="text-sm">Don't have an account? <Link to="/signup" className="text-blue-600">Sign Up</Link></p>
         </div>
