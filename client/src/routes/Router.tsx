@@ -2,13 +2,20 @@ import ForgetPass from "@/auth/ForgetPass";
 import Login from "@/auth/Login";
 import Register from "@/auth/Register";
 import VerifyEmail from "@/auth/VerifyEmail";
-import Navbar from "@/components/Navbar";
+import HeroSection from "@/components/HeroSection";
+import MainLayout from "@/Layout/MainLayout";
 import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
     {
         path: '/',
-        element: <Navbar></Navbar>
+        element: <MainLayout></MainLayout>,
+        children: [
+            {
+                path: "/",
+                element: <HeroSection></HeroSection>
+            }
+        ]
     },
 
     {
