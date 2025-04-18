@@ -105,7 +105,7 @@ const Checkout = ({
                     </div>
                     <DialogFooter className="col-span-2 pt-5">
                         {loading ? (
-                            <Button disabled className="bg-orange hover:bg-hoverOrange">
+                            <Button disabled className="bg-button hover:bg-hoverOrange">
                                 <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                                 Please wait
                             </Button>

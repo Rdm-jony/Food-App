@@ -16,7 +16,7 @@ export const restaurantFormSchema = z.object({
         .instanceof(File)
         .refine((file) => file.size > 0, {
             message: "Image file is required",
-        }),
+        }).optional(),
 });
 
 export type RestaurantFormSchema = z.infer<typeof restaurantFormSchema>;
