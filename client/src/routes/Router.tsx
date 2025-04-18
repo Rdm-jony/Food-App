@@ -2,6 +2,7 @@ import ForgetPass from "@/auth/ForgetPass";
 import Login from "@/auth/Login";
 import Register from "@/auth/Register";
 import VerifyEmail from "@/auth/VerifyEmail";
+import Cart from "@/components/Cart";
 import HeroSection from "@/components/HeroSection";
 import Profile from "@/components/Profile";
 import SearchPage from "@/components/SearchPage";
@@ -24,6 +25,10 @@ export const router = createBrowserRouter([
             {
                 path: "/search",
                 element: <SearchPage></SearchPage>
+            },
+            {
+                path: '/cart',
+                element: <Cart></Cart>
             }
         ]
     },
