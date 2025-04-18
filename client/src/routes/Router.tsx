@@ -7,6 +7,7 @@ import Register from "@/auth/Register";
 import VerifyEmail from "@/auth/VerifyEmail";
 import Cart from "@/components/Cart";
 import HeroSection from "@/components/HeroSection";
+import Order from "@/components/Order";
 import Profile from "@/components/Profile";
 import RestaurantDetail from "@/components/RestaurantDetails";
 import SearchPage from "@/components/SearchPage";
@@ -48,6 +49,10 @@ export const router = createBrowserRouter([
             {
                 path: "/admin/orders",
                 element: <Orders></Orders>
+            },
+            {
+                path: "/order",
+                element: <Order></Order>
             }
         ]
     },
