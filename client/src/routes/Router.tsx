@@ -5,6 +5,7 @@ import VerifyEmail from "@/auth/VerifyEmail";
 import Cart from "@/components/Cart";
 import HeroSection from "@/components/HeroSection";
 import Profile from "@/components/Profile";
+import RestaurantDetail from "@/components/RestaurantDetails";
 import SearchPage from "@/components/SearchPage";
 import MainLayout from "@/Layout/MainLayout";
 import { createBrowserRouter } from "react-router-dom";
@@ -29,7 +30,11 @@ export const router = createBrowserRouter([
             {
                 path: '/cart',
                 element: <Cart></Cart>
-            }
+            },
+            {
+                path: "/details",
+                element: <RestaurantDetail></RestaurantDetail>
+            },
         ]
     },
 
@@ -48,5 +53,6 @@ export const router = createBrowserRouter([
     {
         path: "/verifyEmail",
         element: <VerifyEmail></VerifyEmail>
-    }
+    },
+
 ]);
