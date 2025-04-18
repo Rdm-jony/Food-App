@@ -1,4 +1,6 @@
+import AddMenu from "@/admin/AddMenu";
 import AddRestaurant from "@/admin/AddRestaurant";
+import Orders from "@/admin/Orders";
 import ForgetPass from "@/auth/ForgetPass";
 import Login from "@/auth/Login";
 import Register from "@/auth/Register";
@@ -39,6 +41,13 @@ export const router = createBrowserRouter([
             {
                 path: "/admin/restaurant",
                 element: <AddRestaurant></AddRestaurant>
+            }, {
+                path: "/admin/addMenu",
+                element: <AddMenu></AddMenu>
+            },
+            {
+                path: "/admin/orders",
+                element: <Orders></Orders>
             }
         ]
     },
