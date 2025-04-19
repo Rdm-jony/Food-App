@@ -1,29 +1,11 @@
-import mongoose, { Document, Model } from "mongoose";
-
-export interface IUser {
-    fullName: string;
-    email: string;
-    contact: number;
-    address: string;
-    password: string;
-    city: string;
-    country: string;
-    profileImg: string;
-    admin: boolean;
-    lastLogin?: Date;
-    isVerified?: boolean;
-    resetPasswordToken?: string;
-    resetPasswordTokenExpiresAt?: Date;
-    verificationToken?: string;
-    verificationTokenExpiresAt?: Date
-}
-
-export interface IUserDocument extends IUser, Document {
-    createdAt: Date;
-    updatedAt: Date;
-}
-
-const userSchema = new mongoose.Schema<IUserDocument>({
+"use strict";
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
+Object.defineProperty(exports, "__esModule", { value: true });
+exports.User = void 0;
+const mongoose_1 = __importDefault(require("mongoose"));
+const userSchema = new mongoose_1.default.Schema({
     fullName: {
         type: String,
         required: true
@@ -42,7 +24,7 @@ const userSchema = new mongoose.Schema<IUserDocument>({
     },
     address: {
         type: String,
-        default: "Update your address"
+        required: true
     },
     city: {
         type: String,
@@ -72,7 +54,5 @@ const userSchema = new mongoose.Schema<IUserDocument>({
     resetPasswordTokenExpiresAt: Date,
     verificationToken: String,
     verificationTokenExpiresAt: Date
-
-}, { timestamps: true })
-
-export const User: Model<IUserDocument> = mongoose.model<IUserDocument>("User", userSchema)
+}, { timestamps: true });
+exports.User = mongoose_1.default.model("User", userSchema);
