@@ -27,8 +27,13 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 
 import { Button } from "./ui/button";
 import { HandPlatter, Hotel, ListOrdered, LogOut, Menu, MenuSquare, Moon, ShoppingCart, Sun, User } from "lucide-react";
+import { useUserStore } from "@/stote/useUserStore";
 
 const Navbar = () => {
+    const { logout } = useUserStore()
+    const handleLogout = async () => {
+        await logout()
+    }
     return (
         <div className="flex justify-between mx-10 py-5">
             <div>
@@ -94,7 +99,7 @@ const Navbar = () => {
 
                             </MenubarItem>
                             <MenubarItem>
-                                <Link to="/" className="flex gap-2">
+                                <Link onClick={() => handleLogout()} to="/signIn" className="flex gap-2">
                                     <LogOut></LogOut>
                                     <span>Logout</span>
                                 </Link>

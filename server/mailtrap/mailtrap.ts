@@ -1,4 +1,4 @@
-import { htmlResetEmail, htmlResetSuccessEmail } from "./htmlEmail";
+import { htmlResetEmail, htmlResetSuccessEmail, htmlVerficationCode, htmlVerifySuccess } from "./htmlEmail";
 
 const { MailtrapClient } = require("mailtrap");
 
@@ -18,13 +18,13 @@ export const sendMailVerification = async (email: string, verificationCode: stri
             email: "jonydascse@gmail.com",
         }
     ];
-
+    const htmlContent = htmlVerficationCode(verificationCode)
     client
         .send({
             from: sender,
             to: recipients,
-            subject: "You are awesome!",
-            text: "Congrats for sending test email with Mailtrap!",
+            html: htmlContent,
+            subject: "Verification code!",
             category: "Integration Test",
         })
         .then(console.log, console.error);
@@ -43,13 +43,13 @@ export const sendWelcomeMail = async (email: string, name: string) => {
             email: "jonydascse@gmail.com",
         }
     ];
-
+    const htmlContent = htmlVerifySuccess(name)
     client
         .send({
             from: sender,
             to: recipients,
             subject: "You are welcom!",
-            text: "Congrats for sending test email with Mailtrap!",
+            html: htmlContent,
             category: "Integration Test",
         })
         .then(console.log, console.error);
@@ -78,7 +78,6 @@ export const sendResetPasswordEmail = async (email: string, resetUrl: string) =>
             to: recipients,
             subject: "You are welcom!",
             html: htmlContent,
-            text: "Congrats for sending test email with Mailtrap!",
             category: "Integration Test",
         })
         .then(console.log, console.error);
@@ -106,7 +105,6 @@ export const sendResetPassSuccessEmail = async (email: string) => {
             to: recipients,
             subject: "You are welcom!",
             html: htmlContent,
-            text: "Congrats for sending test email with Mailtrap!",
             category: "Integration Test",
         })
         .then(console.log, console.error);

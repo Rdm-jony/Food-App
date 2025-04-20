@@ -5,8 +5,22 @@ import {
     InputOTPSeparator,
     InputOTPSlot,
 } from "@/components/ui/input-otp";
+import { useUserStore } from "@/stote/useUserStore";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
 
 const VerifyEmail = () => {
+    const { verifyEmail } = useUserStore()
+    const navigate = useNavigate()
+    const [otp, setOtp] = useState<string>("")
+    const handleVerify = async () => {
+        if (otp.length != 6) {
+            return toast.error("OTP must be 6 character long.")
+        }
+        await verifyEmail(otp)
+        navigate("/")
+    }
     return (
         <div className="min-h-screen w-full flex justify-center items-center">
             <div className="p-5 w-full max-w-md text-center border-2 drop-shadow-lg rounded-xl space-y-6">
@@ -16,7 +30,7 @@ const VerifyEmail = () => {
                 </p>
 
                 <div className="flex justify-center">
-                    <InputOTP maxLength={6}>
+                    <InputOTP maxLength={6} value={otp} onChange={(value) => setOtp(value)}>
                         <div className="flex gap-2">
                             <InputOTPGroup className="flex gap-2">
                                 <InputOTPSlot index={0} />
@@ -34,7 +48,7 @@ const VerifyEmail = () => {
                         </div>
                     </InputOTP>
                 </div>
-                <Button className="bg-button w-full">Verify</Button>
+                <Button onClick={() => handleVerify()} className="bg-button w-full">Verify</Button>
             </div>
         </div>
     );

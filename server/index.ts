@@ -11,7 +11,10 @@ dotenv.config();
 connectDb();
 
 app.use(express.json());
-app.use(cors());
+app.use(cors({
+    origin: ["http://localhost:5173"],
+    credentials: true
+}));
 
 // Use the user route under the "/user" base path
 app.use("/user", userRoute);  // This correctly attaches the routes defined in the user.route.ts

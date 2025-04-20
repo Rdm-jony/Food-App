@@ -4,6 +4,7 @@ import Orders from "@/admin/Orders";
 import ForgetPass from "@/auth/ForgetPass";
 import Login from "@/auth/Login";
 import Register from "@/auth/Register";
+import ResetPassword from "@/auth/ResetPassword";
 import VerifyEmail from "@/auth/VerifyEmail";
 import Cart from "@/components/Cart";
 import HeroSection from "@/components/HeroSection";
@@ -12,12 +13,15 @@ import Profile from "@/components/Profile";
 import RestaurantDetail from "@/components/RestaurantDetails";
 import SearchPage from "@/components/SearchPage";
 import MainLayout from "@/Layout/MainLayout";
+import AdminProtectRoute from "@/protect-route/AdminProtectRoute";
+import AuthenticateProtectRoute from "@/protect-route/AuthenticateProtectRoute";
+import UserProtectRoute from "@/protect-route/UserProtectRoute";
 import { createBrowserRouter } from "react-router-dom";
 
 export const router = createBrowserRouter([
     {
         path: '/',
-        element: <MainLayout></MainLayout>,
+        element: <UserProtectRoute><MainLayout></MainLayout></UserProtectRoute>,
         children: [
             {
                 path: "/",
@@ -41,14 +45,14 @@ export const router = createBrowserRouter([
             },
             {
                 path: "/admin/restaurant",
-                element: <AddRestaurant></AddRestaurant>
+                element: <AdminProtectRoute><AddRestaurant></AddRestaurant></AdminProtectRoute>
             }, {
                 path: "/admin/addMenu",
-                element: <AddMenu></AddMenu>
+                element: <AdminProtectRoute><AddMenu></AddMenu></AdminProtectRoute>
             },
             {
                 path: "/admin/orders",
-                element: <Orders></Orders>
+                element: <AdminProtectRoute><Orders></Orders></AdminProtectRoute>
             },
             {
                 path: "/order",
@@ -59,19 +63,23 @@ export const router = createBrowserRouter([
 
     {
         path: "/signin",
-        element: <Login></Login>,
+        element: <AuthenticateProtectRoute> <Login></Login></AuthenticateProtectRoute>,
     },
     {
         path: "/signup",
-        element: <Register></Register>
+        element: <AuthenticateProtectRoute><Register></Register></AuthenticateProtectRoute>
     },
     {
         path: "/forgetPass",
-        element: <ForgetPass></ForgetPass>
+        element: <AuthenticateProtectRoute><ForgetPass></ForgetPass></AuthenticateProtectRoute>
     },
     {
         path: "/verifyEmail",
         element: <VerifyEmail></VerifyEmail>
     },
+    {
+        path: "/resetPassword/:token",
+        element: <ResetPassword></ResetPassword>
+    }
 
 ]);

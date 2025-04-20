@@ -2,12 +2,15 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Separator } from "@/components/ui/separator";
 import { RegisterInputState, userSchemaRegister } from "@/schema/UserSchema";
+import { useUserStore } from "@/stote/useUserStore";
 import { Loader2, Lock, Mail, Phone, User } from "lucide-react";
 import { ChangeEvent, FormEvent, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 
 
 const Register = () => {
+    const { signup } = useUserStore()
+    const navigate = useNavigate()
     const [input, setInput] = useState<RegisterInputState>({
         password: '',
         email: "",
@@ -19,9 +22,8 @@ const Register = () => {
     const changeEventHandler = (e: ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setInput({ ...input, [name]: value })
-        console.log(value)
     }
-    const submitHandler = (e: FormEvent) => {
+    const submitHandler = async (e: FormEvent) => {
         e.preventDefault()
         const result = userSchemaRegister.safeParse(input)
         if (!result.success) {
@@ -29,8 +31,8 @@ const Register = () => {
             setError(errors as Partial<RegisterInputState>)
             return;
         }
-        console.log(input)
-
+        await signup(input)
+        navigate("/verifyEmail")
     }
     const loading = false;
     return (

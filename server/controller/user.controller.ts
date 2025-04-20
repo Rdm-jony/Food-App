@@ -6,6 +6,7 @@ import { generateToken } from "../utils/generateToken";
 import { sendMailVerification, sendResetPassSuccessEmail, sendResetPasswordEmail, sendWelcomeMail } from "../mailtrap/mailtrap";
 import crypto from "crypto"
 
+
 export const signUp: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const { fullName, email, password, contact } = req.body;
@@ -49,6 +50,7 @@ export const login: RequestHandler = async (req: Request, res: Response): Promis
     try {
         const { email, password } = req.body
         const user = await User.findOne({ email })
+        
         if (!user) {
             res.status(400).json({ sucess: false, message: "Incorrect email or password" })
             return;
