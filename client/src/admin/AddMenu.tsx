@@ -8,21 +8,34 @@ import {
     DialogTitle,
     DialogTrigger,
 } from "@/components/ui/dialog";
+import {
+    Select,
+    SelectContent,
+    SelectItem,
+    SelectTrigger,
+    SelectValue,
+} from "@/components/ui/select"
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { MenuFormSchema, menuSchema } from "@/schema/MenuSchema";
 import { Loader2, Plus } from "lucide-react";
-import React, { FormEvent, useState } from "react";
+import React, { FormEvent, useEffect, useState } from "react";
 import EditMenu from "./EditMenu";
+import { useRestaurantStore } from "@/stote/useRestaurantStote";
+import { useMenuStore } from "@/stote/useMenuStore";
 
 
 
 const AddMenu = () => {
+    const { createMenu } = useMenuStore()
+    const { getRestaurantListName, retaurantnameList } = useRestaurantStore()
     const [input, setInput] = useState<MenuFormSchema>({
         name: "",
         description: "",
         price: 0,
         image: undefined,
+        restaurantName: "",
     });
     const [open, setOpen] = useState<boolean>(false);
     const [editOpen, setEditOpen] = useState<boolean>(false);
@@ -42,10 +55,27 @@ const AddMenu = () => {
             setError(fieldErrors as Partial<MenuFormSchema>);
             return;
         }
-        // api ka kaam start from here
+
+        const formData = new FormData();
+        formData.append("name", input.name);
+        formData.append("description", input.description);
+        formData.append("price", input.price.toString());
+        formData.append("restaurantName", input.restaurantName);
+        if (input.image) {
+            formData.append("imageMenu", input.image);
+        }
+        console.log(input)
+        await createMenu(formData)
 
     };
 
+    useEffect(() => {
+        const fetchRestaurantList = async () => {
+            await getRestaurantListName()
+        }
+        fetchRestaurantList()
+    }, [])
+    console.log(input)
     const loading = false
     return (
         <div className="max-w-6xl mx-auto my-10">
@@ -110,6 +140,25 @@ const AddMenu = () => {
                                 {error && (
                                     <span className="text-xs font-medium text-red-600">
                                         {error.price}
+                                    </span>
+                                )}
+                            </div>
+                            <div >
+                                <Label>Select Restaurant Name</Label>
+                                <Select name="restaurantName" value={input.restaurantName} onValueChange={(value) => setInput(prev => ({ ...prev, restaurantName: value }))}>
+                                    <SelectTrigger className="w-full">
+                                        <SelectValue placeholder="Select Restaurant" />
+                                    </SelectTrigger>
+                                    <SelectContent>
+                                        {
+                                            retaurantnameList?.map((name, idx) => <SelectItem key={idx} value={name}>{name}</SelectItem>
+                                            )
+                                        }
+                                    </SelectContent>
+                                </Select>
+                                {error && (
+                                    <span className="text-xs font-medium text-red-600">
+                                        {error.restaurantName}
                                     </span>
                                 )}
                             </div>
