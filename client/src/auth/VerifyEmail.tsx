@@ -6,12 +6,13 @@ import {
     InputOTPSlot,
 } from "@/components/ui/input-otp";
 import { useUserStore } from "@/stote/useUserStore";
+import { Loader2 } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 
 const VerifyEmail = () => {
-    const { verifyEmail } = useUserStore()
+    const { verifyEmail, loading } = useUserStore()
     const navigate = useNavigate()
     const [otp, setOtp] = useState<string>("")
     const handleVerify = async () => {
@@ -48,7 +49,11 @@ const VerifyEmail = () => {
                         </div>
                     </InputOTP>
                 </div>
-                <Button onClick={() => handleVerify()} className="bg-button w-full">Verify</Button>
+                {
+                    loading ? <Button disabled className="bg-button w-full"><Loader2 className="animate-spin" />please wait</Button> : <Button onClick={() => handleVerify()} className="bg-button w-full">Verify</Button>
+
+                }
+
             </div>
         </div>
     );

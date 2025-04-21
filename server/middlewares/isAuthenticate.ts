@@ -1,5 +1,7 @@
-import { NextFunction, Request, Response } from "express"
+import { NextFunction, Request, RequestHandler, Response } from "express"
 import jwt from "jsonwebtoken"
+import dotenv from "dotenv";
+dotenv.config()
 declare global {
     namespace Express {
         interface Request {
@@ -7,7 +9,7 @@ declare global {
         }
     }
 }
-export const isAuthenticate = (res: Response, req: Request, next: NextFunction) => {
+export const isAuthenticate: RequestHandler = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
         const token = req.cookies.token;
         if (!token) {
@@ -17,21 +19,16 @@ export const isAuthenticate = (res: Response, req: Request, next: NextFunction) 
             });
             return;
         }
-        const decode = jwt.verify(token, process.env.SECRET_KEY!) as jwt.JwtPayload;
-        if (!decode) {
-            res.status(401).json({
-                success: false,
-                message: "Invalid token"
-            })
-            return;
-        }
+        const decode = jwt.verify(token, process.env.JWT_SECRET!) as jwt.JwtPayload;
 
         req.userId = decode.userId
         next()
 
-    } catch (error) {
+    } catch (error: any) {
+        console.error("JWT verification failed:", error.message);
         res.status(500).json({
-            message: "Internal server error"
+
+            message: error.message || "Internal server error"
         })
     }
 }

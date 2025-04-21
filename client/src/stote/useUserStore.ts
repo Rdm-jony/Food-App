@@ -29,6 +29,7 @@ type userState = {
     forgetPassword: (email: string) => Promise<void>;
     resetPassword: (token: string, newPassword: string) => Promise<void>;
     logout: () => Promise<void>;
+    checkingTokenAuth: () => Promise<void>;
 
 }
 export const useUserStore = create<userState>()(
@@ -164,6 +165,26 @@ export const useUserStore = create<userState>()(
                         toast.error('An unexpected error occurred');
                     }
                     set({ loading: false });
+                }
+            },
+            checkingTokenAuth: async () => {
+                try {
+                    set({ isCheckingAuth: true })
+                    const response = await axios.get(`${API_END_POINT}/check-auth`)
+                    if (response.data.success) {
+                        set({ user: response.data.user, isAuthenticated: true, isCheckingAuth: false });
+                    }
+                } catch (error: unknown) {
+                    if (axios.isAxiosError(error)) {
+                        // This is an Axios error
+                        toast.error(error.response?.data?.message || 'Something went wrong');
+                    } else if (error instanceof Error) {
+                        // A general JS error
+                        toast.error(error.message);
+                    } else {
+                        toast.error('An unexpected error occurred');
+                    }
+                    set({ isAuthenticated: false, isCheckingAuth: false });
                 }
             },
         }),

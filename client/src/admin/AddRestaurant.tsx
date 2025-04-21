@@ -2,11 +2,13 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { RestaurantFormSchema, restaurantFormSchema } from "@/schema/RestaurantSchema";
+import { useRestaurantStore } from "@/stote/useRestaurantStote";
 
 import { Loader2 } from "lucide-react";
 import { FormEvent, useState } from "react";
 
 const AddRestaurant = () => {
+    const { createRestaurant } = useRestaurantStore()
     const [input, setInput] = useState<RestaurantFormSchema>({
         restaurantName: "",
         city: "",
@@ -34,6 +36,16 @@ const AddRestaurant = () => {
             return;
         }
         // add restaurant api implementation start from here
+        const formData = new FormData();
+        formData.append("restaurantName", input.restaurantName);
+        formData.append("city", input.city);
+        formData.append("country", input.country);
+        formData.append("deliveryTime", String(input.deliveryTime));
+        formData.append("cuisines", input.cuisines.join(","));
+        if (input.imageFile) {
+            formData.append("imageFile", input.imageFile);
+        }
+        await createRestaurant(formData)
 
     };
 

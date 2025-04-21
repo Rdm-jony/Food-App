@@ -50,7 +50,7 @@ export const login: RequestHandler = async (req: Request, res: Response): Promis
     try {
         const { email, password } = req.body
         const user = await User.findOne({ email })
-        
+
         if (!user) {
             res.status(400).json({ sucess: false, message: "Incorrect email or password" })
             return;
@@ -157,6 +157,28 @@ export const resetPassword: RequestHandler = async (req: Request, res: Response)
         res.status(500).json({ message: "Internal server error" })
 
     }
+}
+
+export const checkAuth: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const userId = req.userId
+        const user = await User.findById(userId).select("-password");
+        if (!user) {
+             res.status(404).json({
+                success: false,
+                message: 'User not found'
+            });
+            return;
+        };
+         res.status(200).json({
+            success: true,
+            user
+        });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+
 }
 
 

@@ -9,7 +9,7 @@ import { Link, useNavigate } from "react-router-dom";
 
 
 const Login = () => {
-    const { login } = useUserStore()
+    const { login, loading } = useUserStore()
     const navigate = useNavigate()
     const [input, setInput] = useState<LoginInputState>({
         password: '',
@@ -38,7 +38,6 @@ const Login = () => {
         }
 
     }
-    const loading = false;
     return (
         <div className="w-1/3 h-screen mx-auto flex flex-col justify-center items-center">
             <h2 className="text-2xl font-semibold my-5">Food App</h2>
