@@ -9,11 +9,13 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2, Plus } from "lucide-react";
 import { FormEvent, useState } from "react";
 import RestaurantCard from "./RestaurantCard";
+import LoadingPage from "@/components/LoadingPage";
 
 const AddRestaurant = () => {
     const [isSheetOpen, setIsSheetOpen] = useState(false);
     const [isEditMode, setIsEditMode] = useState(false);
-    const { createRestaurant, getRestaurant, restaurant } = useRestaurantStore()
+    const [selectedId, setSelctedId] = useState("")
+    const { createRestaurant, getRestaurant, restaurant, updateRestaurant } = useRestaurantStore()
     const [input, setInput] = useState<RestaurantFormSchema>({
         restaurantName: "",
         city: "",
@@ -50,8 +52,12 @@ const AddRestaurant = () => {
         if (input.imageFile) {
             formData.append("imageFile", input.imageFile);
         }
-        console.log(input)
-        // await createRestaurant(formData)
+        if (isEditMode) {
+            formData.append("retsuarantId", selectedId);
+            await updateRestaurant(formData)
+            return;
+        }
+        await createRestaurant(formData)
 
     };
 
@@ -62,6 +68,10 @@ const AddRestaurant = () => {
             return [];
         }
     })
+    if (isLoading) {
+
+        return <LoadingPage></LoadingPage>
+    }
     const loading = false
     // const restaurant = false
     return (
@@ -213,7 +223,7 @@ const AddRestaurant = () => {
             </div>
             <div>
                 {
-                    restaurant?.map((item) => <RestaurantCard key={item._id} setIsSheetOpen={setIsSheetOpen} setInput={setInput} setIsEditMode={setIsEditMode} restaurant={item}></RestaurantCard>)
+                    restaurant?.map((item) => <RestaurantCard key={item._id} setSelctedId={setSelctedId} setIsSheetOpen={setIsSheetOpen} setInput={setInput} setIsEditMode={setIsEditMode} restaurant={item}></RestaurantCard>)
                 }
             </div>
         </div>

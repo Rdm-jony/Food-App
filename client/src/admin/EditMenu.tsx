@@ -32,6 +32,7 @@ const EditMenu = ({
         description: "",
         price: 0,
         image: undefined,
+        restaurantName: "",
     });
     const [error, setError] = useState<Partial<MenuFormSchema>>({});
 

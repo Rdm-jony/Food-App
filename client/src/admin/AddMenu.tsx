@@ -24,11 +24,12 @@ import React, { FormEvent, useEffect, useState } from "react";
 import EditMenu from "./EditMenu";
 import { useRestaurantStore } from "@/stote/useRestaurantStote";
 import { useMenuStore } from "@/stote/useMenuStore";
+import AvailableMenuAdmin from "./AvailableMenuAdmin";
 
 
 
 const AddMenu = () => {
-    const { createMenu } = useMenuStore()
+    const { createMenu, getMenu, groupMenus } = useMenuStore()
     const { getRestaurantListName, retaurantnameList } = useRestaurantStore()
     const [input, setInput] = useState<MenuFormSchema>({
         name: "",
@@ -40,7 +41,7 @@ const AddMenu = () => {
     const [open, setOpen] = useState<boolean>(false);
     const [editOpen, setEditOpen] = useState<boolean>(false);
     const [error, setError] = useState<Partial<MenuFormSchema>>({});
-
+    // const [selectedMenu,setSelectedMenu]=useState<MenuItem>()
 
     const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value, type } = e.target;
@@ -72,10 +73,11 @@ const AddMenu = () => {
     useEffect(() => {
         const fetchRestaurantList = async () => {
             await getRestaurantListName()
+            await getMenu()
         }
         fetchRestaurantList()
     }, [])
-    console.log(input)
+
     const loading = false
     return (
         <div className="max-w-6xl mx-auto my-10">
@@ -196,33 +198,7 @@ const AddMenu = () => {
                     </DialogContent>
                 </Dialog>
             </div>
-            {[1, 2, 3]?.map((menu, idx: number) => (
-                <div key={idx} className="mt-6 space-y-4">
-                    <div className="flex flex-col md:flex-row md:items-center md:space-x-4 md:p-4 p-2 shadow-md rounded-lg border">
-                        <img
-                            src='https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?s=612x612&w=0&k=20&c=9awLLRMBLeiYsrXrkgzkoscVU_3RoVwl_HA-OT-srjQ='
-                            alt=""
-                            className="md:h-24 md:w-24 h-16 w-full object-cover rounded-lg"
-                        />
-                        <div className="flex-1">
-                            <h1 className="text-lg font-semibold text-gray-800">
-                                Pizaa
-                            </h1>
-                            <p className="text-sm tex-gray-600 mt-1">Lorem ipsum dolor sit, amet consectetur adipisicing elit. Qui ratione, incidunt, explicabo sunt nobis veniam eaque illum dolorum eligendi eos reiciendis adipisci illo! Pariatur ex obcaecati quo iure inventore! At!</p>
-                            <h2 className="text-md font-semibold mt-2">
-                                Price: <span className="text-[#D19254]">80</span>
-                            </h2>
-                        </div>
-                        <Button
-                            onClick={() => setEditOpen(true)}
-                            size={"sm"}
-                            className="bg-button hover:bg-hoverOrange mt-2"
-                        >
-                            Edit
-                        </Button>
-                    </div>
-                </div>
-            ))}
+            <AvailableMenuAdmin data={groupMenus || []}></AvailableMenuAdmin>
             <EditMenu editOpen={editOpen} setEditOpen={setEditOpen}></EditMenu>
         </div>
     );

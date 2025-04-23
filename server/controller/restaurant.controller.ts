@@ -70,3 +70,64 @@ export const getRestaurant: RequestHandler = async (req: Request, res: Response)
         return;
     }
 }
+
+export const updateRestaurant: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { retsuarantId, restaurantName, city, country, deliveryTime, cuisines } = req.body;
+        const file = req.file;
+        const restaurant = await Restaurant.findOne({ user: req.userId, _id: retsuarantId });
+
+        if (!restaurant) {
+            res.status(404).json({
+                success: false,
+                message: "Restaurant not found"
+            })
+            return;
+        };
+        restaurant.restaurantName = restaurantName;
+        restaurant.city = city;
+        restaurant.country = country;
+        restaurant.deliveryTime = deliveryTime;
+        restaurant.cuisines = cuisines.split(",");
+
+        if (file) {
+            const imageUrl = await uploadImageOnCloudinary(file as Express.Multer.File);
+            restaurant.imageUrl = imageUrl;
+        }
+        await restaurant.save();
+        res.status(200).json({
+            success: true,
+            message: "Restaurant updated",
+            restaurant
+        })
+        return;
+    } catch (error) {
+        console.log(error);
+
+        res.status(500).json({ message: "Internal server error" })
+        return;
+    }
+}
+
+export const getSingleRestaurant: RequestHandler = async (req: Request, res: Response): Promise<void>=> {
+    try {
+        const restaurantId = req.params.id;
+        const restaurant = await Restaurant.findById(restaurantId).populate({
+            path: 'menus',
+            options: { createdAt: -1 }
+        });
+        if (!restaurant) {
+            res.status(404).json({
+                success: false,
+                message: "Restaurant not found"
+            })
+            return;
+        };
+        res.status(200).json({ success: true, restaurant });
+        return;
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" })
+        return
+    }
+}

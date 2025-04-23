@@ -30,17 +30,17 @@ export type RestaurantState = {
     getRestaurant: () => Promise<void>;
     // searchedRestaurant: SearchedRestaurant | null;
     // appliedFilter: string[];
-    // singleRestaurant: Restaurant | null,
+    singleRestaurant: Restaurant | null,
     // restaurantOrder: Orders[],
     createRestaurant: (formData: FormData) => Promise<void>;
     // getRestaurant: () => Promise<void>;
-    // updateRestaurant: (formData: FormData) => Promise<void>;
+    updateRestaurant: (formData: FormData) => Promise<void>;
     // searchRestaurant: (searchText: string, searchQuery: string, selectedCuisines: any) => Promise<void>;
     // addMenuToRestaurant: (menu: MenuItem) => void;
     // updateMenuToRestaurant: (menu: MenuItem) => void;
     // setAppliedFilter: (value: string) => void;
     // resetAppliedFilter: () => void;
-    // getSingleRestaurant: (restaurantId: string) => Promise<void>;
+    getRestaurantById: (restaurantId: string) => Promise<void>;
     // getRestaurantOrders: () => Promise<void>;
     // updateRestaurantOrder: (orderId: string, status: string) => Promise<void>;
 }
@@ -50,6 +50,7 @@ axios.defaults.withCredentials = true;
 export const useRestaurantStore = create<RestaurantState>()(persist((set) => ({
     loading: false,
     restaurant: [],
+    singleRestaurant: null,
     retaurantnameList: [],
     createRestaurant: async (formData: FormData) => {
         try {
@@ -104,6 +105,51 @@ export const useRestaurantStore = create<RestaurantState>()(persist((set) => ({
             const response = await axios.get(`${API_END_POINT}`);
             if (response.data.success) {
                 set({ loading: false, restaurant: response.data.restaurant });
+            }
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                // This is an Axios error
+                toast.error(error.response?.data?.message || 'Something went wrong');
+            } else if (error instanceof Error) {
+                // A general JS error
+                toast.error(error.message);
+            } else {
+                toast.error('An unexpected error occurred');
+            }
+            set({ loading: false });
+        }
+    },
+    getRestaurantById: async (restaurantId: string) => {
+        try {
+            set({ loading: true });
+            const response = await axios.get(`${API_END_POINT}/${restaurantId}`);
+            if (response.data.success) {
+                set({ loading: false, singleRestaurant: response.data.restaurant });
+            }
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                // This is an Axios error
+                toast.error(error.response?.data?.message || 'Something went wrong');
+            } else if (error instanceof Error) {
+                // A general JS error
+                toast.error(error.message);
+            } else {
+                toast.error('An unexpected error occurred');
+            }
+            set({ loading: false });
+        }
+    },
+    updateRestaurant: async (formData: FormData) => {
+        try {
+            set({ loading: true });
+            const response = await axios.put(`${API_END_POINT}/`, formData, {
+                headers: {
+                    'Content-Type': 'multipart/form-data'
+                }
+            });
+            if (response.data.success) {
+                toast.success(response.data.message);
+                set({ loading: false });
             }
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {
