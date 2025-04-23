@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { Input } from "./ui/input";
 import { useState } from "react";
 import { Button } from "./ui/button";
@@ -6,14 +6,28 @@ import { Badge } from "./ui/badge";
 import { Globe, MapPin, X } from "lucide-react";
 import { Card, CardContent, CardFooter } from "./ui/card";
 import { AspectRatio } from "./ui/aspect-ratio";
-import heroImg from '../assets/hero_pizza.png'
 import FilterPage from "./FilterPage";
+import { useRestaurantStore } from "@/stote/useRestaurantStote";
+import { useQuery } from "@tanstack/react-query";
+import LoadingPage from "./LoadingPage";
 
 const SearchPage = () => {
-    // const params = useParams();
+    const { searchRestaurant, searchedRestaurant } = useRestaurantStore()
+    const params = useParams();
     const [searchQuery, setSearchQuery] = useState<string>("");
 
+    const { isLoading } = useQuery({
+        queryKey: ["restaurant", params.text],
+        queryFn: async () => {
+            await searchRestaurant(params.text!, searchQuery, [])
+            return [];
+        }
+    })
+    if (isLoading) {
 
+        return <LoadingPage></LoadingPage>
+    }
+    console.log(searchedRestaurant)
     return (
         <div className="max-w-7xl mx-auto my-10">
             <div className="flex flex-col md:flex-row justify-between gap-10">
@@ -28,8 +42,10 @@ const SearchPage = () => {
                             onChange={(e) => setSearchQuery(e.target.value)}
                         />
                         <Button
-
-                            className="bg-orange hover:bg-hoverOrange"
+                            onClick={() =>
+                                searchRestaurant(params.text!, searchQuery, [])
+                            }
+                            className="bg-button hover:bg-hoverOrange"
                         >
                             Search
                         </Button>
@@ -66,7 +82,7 @@ const SearchPage = () => {
                         {/* Restaurant Cards  */}
                         <div className="grid md:grid-cols-3 gap-4">
                             {
-                                [1, 2, 3].map((restaurant, idx) => (
+                                searchedRestaurant?.map((restaurant, idx) => (
                                     <Card
                                         key={idx}
                                         className="bg-white dark:bg-gray-800 shadow-xl rounded-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300"
@@ -74,7 +90,7 @@ const SearchPage = () => {
                                         <div className="relative">
                                             <AspectRatio ratio={16 / 6}>
                                                 <img
-                                                    src={heroImg}
+                                                    src={restaurant.imageUrl}
                                                     alt=""
                                                     className="w-full h-full object-cover"
                                                 />

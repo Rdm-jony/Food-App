@@ -22,20 +22,21 @@ export type MenuItem = {
     image: string;
     restaurantName: string;
 }
+
 export type RestaurantState = {
     loading: boolean;
     restaurant: Restaurant[];
     retaurantnameList: string[];
     getRestaurantListName: () => Promise<void>;
     getRestaurant: () => Promise<void>;
-    // searchedRestaurant: SearchedRestaurant | null;
+    searchedRestaurant: Restaurant[];
     // appliedFilter: string[];
     singleRestaurant: Restaurant | null,
     // restaurantOrder: Orders[],
     createRestaurant: (formData: FormData) => Promise<void>;
     // getRestaurant: () => Promise<void>;
     updateRestaurant: (formData: FormData) => Promise<void>;
-    // searchRestaurant: (searchText: string, searchQuery: string, selectedCuisines: any) => Promise<void>;
+    searchRestaurant: (searchText: string, searchQuery: string, selectedCuisines: unknown[]) => Promise<void>;
     // addMenuToRestaurant: (menu: MenuItem) => void;
     // updateMenuToRestaurant: (menu: MenuItem) => void;
     // setAppliedFilter: (value: string) => void;
@@ -50,6 +51,7 @@ axios.defaults.withCredentials = true;
 export const useRestaurantStore = create<RestaurantState>()(persist((set) => ({
     loading: false,
     restaurant: [],
+    searchedRestaurant: [],
     singleRestaurant: null,
     retaurantnameList: [],
     createRestaurant: async (formData: FormData) => {
@@ -150,6 +152,32 @@ export const useRestaurantStore = create<RestaurantState>()(persist((set) => ({
             if (response.data.success) {
                 toast.success(response.data.message);
                 set({ loading: false });
+            }
+        } catch (error: unknown) {
+            if (axios.isAxiosError(error)) {
+                // This is an Axios error
+                toast.error(error.response?.data?.message || 'Something went wrong');
+            } else if (error instanceof Error) {
+                // A general JS error
+                toast.error(error.message);
+            } else {
+                toast.error('An unexpected error occurred');
+            }
+            set({ loading: false });
+        }
+    },
+    searchRestaurant: async (searchText: string, searchQuery: string, selectedCuisines: unknown[]) => {
+        try {
+            set({ loading: true });
+
+            const params = new URLSearchParams();
+            params.set("searchQuery", searchQuery);
+            params.set("selectedCuisines", selectedCuisines.join(","));
+
+            // await new Promise((resolve) => setTimeout(resolve, 2000));
+            const response = await axios.get(`${API_END_POINT}/search/${searchText}?${params.toString()}`);
+            if (response.data.success) {
+                set({ loading: false, searchedRestaurant: response.data.restaurants });
             }
         } catch (error: unknown) {
             if (axios.isAxiosError(error)) {

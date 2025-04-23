@@ -109,7 +109,7 @@ export const updateRestaurant: RequestHandler = async (req: Request, res: Respon
     }
 }
 
-export const getSingleRestaurant: RequestHandler = async (req: Request, res: Response): Promise<void>=> {
+export const getSingleRestaurant: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
         const restaurantId = req.params.id;
         const restaurant = await Restaurant.findById(restaurantId).populate({
@@ -125,6 +125,44 @@ export const getSingleRestaurant: RequestHandler = async (req: Request, res: Res
         };
         res.status(200).json({ success: true, restaurant });
         return;
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({ message: "Internal server error" })
+        return
+    }
+}
+export const getSearchRestaurant: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const searchText = req.params.searchText || "";
+        const searchQuery = req.query.searchQuery || "";
+        const selectedCuisines = (req.query.selectedCuisines as string || "").split(",").filter(cuisine => cuisine);
+        console.log(searchText)
+        const query: any = {};
+        if (searchText) {
+            query.$or = [
+                { restaurantName: { $regex: searchText, $options: 'i' } },
+                { city: { $regex: searchText, $options: 'i' } },
+                { country: { $regex: searchText, $options: 'i' } },
+            ]
+        }
+        if (searchQuery) {
+            query.$or = [
+                { restaurantName: { $regex: searchQuery, $options: 'i' } },
+                { cuisines: { $regex: searchQuery, $options: 'i' } }
+            ]
+        }
+        if (selectedCuisines.length > 0) {
+            query.cuisines = { $in: selectedCuisines }
+        }
+        const restaurants = await Restaurant.find(query);
+        console.log(restaurants)
+        res.status(200).json({
+            success: true,
+            restaurants
+        });
+        return;
+
+
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal server error" })

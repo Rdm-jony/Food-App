@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
                 element: <Profile></Profile>
             },
             {
-                path: "/search",
+                path: "/restaurant/search/:text",
                 element: <SearchPage></SearchPage>
             },
             {
