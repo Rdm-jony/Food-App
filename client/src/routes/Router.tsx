@@ -32,7 +32,7 @@ export const router = createBrowserRouter([
                 element: <Profile></Profile>
             },
             {
-                path: "/restaurant/search/:text",
+                path: "/search/:text",
                 element: <SearchPage></SearchPage>
             },
             {
@@ -47,7 +47,7 @@ export const router = createBrowserRouter([
                 path: "/admin/restaurant",
                 element: <AdminProtectRoute><AddRestaurant></AddRestaurant></AdminProtectRoute>
             }, {
-                path: "/admin/addMenu",
+                path: "/admin/addMenu/:restaurantId",
                 element: <AdminProtectRoute><AddMenu></AddMenu></AdminProtectRoute>
             },
             {

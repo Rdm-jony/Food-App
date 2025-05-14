@@ -21,15 +21,14 @@ import {
     SheetTrigger,
 } from "@/components/ui/sheet"
 import { Separator } from "@/components/ui/separator"
-
-
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
-
 import { Button } from "./ui/button";
 import { HandPlatter, Hotel, ListOrdered, LogOut, Menu, MenuSquare, Moon, ShoppingCart, Sun, User } from "lucide-react";
 import { useUserStore } from "@/stote/useUserStore";
+import { useCartStore } from "@/stote/useCartStore";
 
 const Navbar = () => {
+    const { cart } = useCartStore()
     const { logout } = useUserStore()
     const handleLogout = async () => {
         await logout()
@@ -45,8 +44,8 @@ const Navbar = () => {
                 <Link to="/">Order</Link>
                 <Menubar className="border-none shadow-none">
                     <MenubarMenu >
-                        <MenubarTrigger className="cursor-pointer">Dashboard</MenubarTrigger>
-                        <MenubarContent>
+                        <MenubarTrigger className="cursor-pointer menubar-trigger">Dashboard</MenubarTrigger>
+                        <MenubarContent className="bg-white">
                             <MenubarItem>
                                 <Link to="/">Resturant</Link>
                             </MenubarItem>
@@ -78,10 +77,12 @@ const Navbar = () => {
 
                     </DropdownMenuContent>
                 </DropdownMenu>
-                <div className="relative">
-                    <ShoppingCart></ShoppingCart>
-                    <Button size="icon" className="bg-red-500 absolute rounded-full w-5 h-5 text-xs top-[-15px] left-3">0</Button>
-                </div>
+                <Link to="/cart">
+                    <div className="relative">
+                        <ShoppingCart ></ShoppingCart>
+                        <Button size="icon" className="bg-red-500 absolute rounded-full w-5 h-5 text-xs top-[-15px] left-3">{cart.length}</Button>
+                    </div>
+                </Link>
                 <Menubar className="border-none p-0 m-0 shadow-none">
                     <MenubarMenu>
                         <MenubarTrigger className="p-0">

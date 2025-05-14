@@ -1,6 +1,7 @@
 import express from 'express';
-import { checkAuth, forgetPassword, login, logout, resetPassword, signUp, verifyEmail } from '../controller/user.controller';
+import { checkAuth, forgetPassword, login, logout, resetPassword, signUp, updateProfile, verifyEmail } from '../controller/user.controller';
 import { isAuthenticate } from '../middlewares/isAuthenticate';
+import multer from 'multer';
 
 const router = express.Router();
 
@@ -12,5 +13,6 @@ router.post("/verifyEmail", verifyEmail);
 router.post("/logout", logout);
 router.post("/forgetPassword", forgetPassword);
 router.post("/resetPassword/:token", resetPassword);
+router.post("/updateProfile", isAuthenticate, multer().single("profilePicture"), updateProfile);
 
 export default router;  

@@ -1,16 +1,23 @@
 import { MenuItem } from "@/stote/useRestaurantStote";
 import { Button } from "./ui/button";
 import { Card, CardContent, CardFooter } from "./ui/card";
+import { useCartStore } from "@/stote/useCartStore";
+import { Link } from "react-router-dom";
+import { PlusCircleIcon } from "lucide-react";
 
 const AvailableMenu = ({ menus }: { menus: MenuItem[] }) => {
+    const { addToCart } = useCartStore()
     if (!menus) {
         return null;
     }
     return (
         <div className="md:p-4">
-            <h1 className="text-xl md:text-2xl font-extrabold mb-6">
-                Available Menus
-            </h1>
+            <div className="flex justify-between items-center">
+                <h1 className="text-xl md:text-2xl font-extrabold mb-6">
+                    Available Menus
+                </h1>
+                
+            </div>
             <div className="grid md:grid-cols-3 space-y-4 md:space-y-0">
                 {menus.map((menu) => (
                     <Card key={menu._id} className="max-w-xs mx-auto shadow-lg rounded-lg overflow-hidden">
@@ -26,6 +33,7 @@ const AvailableMenu = ({ menus }: { menus: MenuItem[] }) => {
                         </CardContent>
                         <CardFooter className="p-4">
                             <Button
+                                onClick={() => addToCart(menu)}
                                 className="w-full bg-button hover:bg-hoverOrange"
                             >
                                 Add to Cart

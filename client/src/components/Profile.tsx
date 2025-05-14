@@ -2,44 +2,54 @@ import { Home, Mail, Phone, Plus } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "./ui/avatar";
 import React, { useRef, useState } from "react";
 import { Button } from "./ui/button";
-
+import { useUserStore } from "@/stote/useUserStore";
 const Profile = () => {
+    const { user, updateProfile } = useUserStore();
     const fileInputRef = useRef<HTMLInputElement>(null);
-    const [imageUrl, setImageUrl] = useState<string | null>(null);
+    const [imageUrl, setImageUrl] = useState<File | null>(null);
     const [profileData, setProfileData] = useState({
-        fullName: '',
-        email: '',
-        contact: '',
-        profileImg: '',
+        fullName: user?.fullName || '',
+        address: user?.address || '',
+        city: user?.city || '',
+        country: user?.country || '',
+        email: user?.email || '',
+        contact: user?.contact || 0,
+        profileImg: user?.profileImg  || undefined,
     });
-
+    console.log(user)
     const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            const url = URL.createObjectURL(file);
-            setImageUrl(url);
-            setProfileData((prev) => ({
-                ...prev,
-                profileImg: url,
-            }));
+            setImageUrl(file);
         }
     };
 
     const handleFileClick = () => {
         fileInputRef.current?.click();
+
     };
 
     const inputChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
         const { name, value } = e.target;
         setProfileData((prev) => ({
             ...prev,
-            [name]: value,
+            [name]: name === 'contact' ? Number(value) : value,
         }));
     };
 
-    const submitHandler = (e: React.FormEvent<HTMLFormElement>) => {
+    const submitHandler = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log(profileData);
+        const formData = new FormData();
+        formData.append("fullName", profileData.fullName);
+        formData.append("email", profileData.email);
+        formData.append("contact", profileData.contact.toString());
+        formData.append("address", profileData.address);
+        formData.append("city", profileData.city);
+        formData.append("country", profileData.country);
+        if (imageUrl) {
+            formData.append("profilePicture", imageUrl);
+        }
+        await updateProfile(formData);
     };
 
     return (
@@ -52,7 +62,7 @@ const Profile = () => {
                         className="relative w-24 h-24 bg-gray-200 rounded-full flex justify-center items-center cursor-pointer group"
                     >
                         <Avatar className="w-20 h-20">
-                            <AvatarImage src={imageUrl || "https://github.com/shadcn.png"} />
+                            <AvatarImage src={profileData.profileImg} />
                             <AvatarFallback>CN</AvatarFallback>
                         </Avatar>
 
@@ -85,6 +95,7 @@ const Profile = () => {
                     <div className="flex-1">
                         <label className="text-sm text-gray-600">Email</label>
                         <input
+                            readOnly
                             type="text"
                             name="email"
                             value={profileData.email}

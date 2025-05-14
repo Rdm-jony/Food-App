@@ -8,13 +8,13 @@ const API_END_POINT = "http://localhost:5000/user"
 axios.defaults.withCredentials = true;
 
 type User = {
-    fullname: string;
+    fullName: string;
     email: string;
     contact: number;
     address: string;
     city: string;
     country: string;
-    profilePicture: string;
+    profileImg: string;
     admin: boolean;
     isVerified: boolean;
 }
@@ -30,6 +30,7 @@ type userState = {
     resetPassword: (token: string, newPassword: string) => Promise<void>;
     logout: () => Promise<void>;
     checkingTokenAuth: () => Promise<void>;
+    updateProfile: (input: FormData) => Promise<void>;
 
 }
 export const useUserStore = create<userState>()(
@@ -187,10 +188,27 @@ export const useUserStore = create<userState>()(
                     set({ isAuthenticated: false, isCheckingAuth: false });
                 }
             },
+            updateProfile: async (input: FormData) => {
+                try {
+                    set({ loading: true })
+                    const response = await axios.post(`${API_END_POINT}/updateProfile`, input)
+                    toast.success(response.data.message)
+                    set({ loading: false, user: response.data.user, isAuthenticated: true })
+                } catch (error: unknown) {
+                    if (axios.isAxiosError(error)) {
+                        toast.error(error.response?.data?.message || 'Something went wrong');
+                    } else if (error instanceof Error) {
+                        toast.error(error.message);
+                    } else {
+                        toast.error('An unexpected error occurred');
+                    }
+                    set({ loading: false });
+                }
+            }
         }),
         {
             name: 'user-name',
             storage: createJSONStorage(() => localStorage),
         }
     )
-)
+);

@@ -5,6 +5,7 @@ import cors from "cors";
 import userRoute from "./routes/user.route";  // Import the router
 import restaurantRoute from "./routes/restaurant.route";  // Import the router
 import menuRoute from "./routes/menu.route";  // Import the router
+import orderRoute from "./routes/order.route";  // Import the router
 import cookieParser from 'cookie-parser';
 
 const app = express();
@@ -24,6 +25,7 @@ app.use(cors({
 app.use("/user", userRoute);  // This correctly attaches the routes defined in the user.route.ts
 app.use("/restaurant", restaurantRoute);  // This correctly attaches the routes defined in the user.route.ts
 app.use("/menu", menuRoute);  // This correctly attaches the routes defined in the user.route.ts
+app.use("/order", orderRoute);  // This correctly attaches the routes defined in the user.route.ts
 
 app.listen(port, () => {
     console.log(`Food app server running at ${port}`);

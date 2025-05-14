@@ -12,23 +12,20 @@ import {
 } from "./ui/table";
 import Checkout from "./Checkout";
 import { useState } from "react";
+import { useCartStore } from "@/stote/useCartStore";
 
-const cart = [
-    {
-        image: "https://media.istockphoto.com/id/1829241109/photo/enjoying-a-brunch-together.jpg?s=612x612&w=0&k=20&c=9awLLRMBLeiYsrXrkgzkoscVU_3RoVwl_HA-OT-srjQ=",
-        name: "Pizza",
-        price: 200,
-        quantity: 5
-    }
-]
+
 const Cart = () => {
+    const { cart, incrementQuantity, decrementQuantity, removeFromTheCart, clearCart } = useCartStore()
     const [open, setOpen] = useState<boolean>(false);
-
+    const totalAmount = cart.reduce((acc, ele) => {
+        return acc + ele.price * ele.quantity;
+    }, 0);
 
     return (
         <div className="flex flex-col max-w-7xl mx-auto my-10">
             <div className="flex justify-end">
-                <Button variant="link">Clear All</Button>
+                <Button onClick={() => clearCart()} variant="link">Clear All</Button>
             </div>
             <Table>
                 <TableHeader>
@@ -55,6 +52,7 @@ const Cart = () => {
                             <TableCell>
                                 <div className="w-fit flex items-center rounded-full border border-gray-100 dark:border-gray-800 shadow-md">
                                     <Button
+                                        onClick={() => decrementQuantity(item._id)}
                                         size={"icon"}
                                         variant={"outline"}
                                         className="rounded-full bg-gray-200"
@@ -70,6 +68,7 @@ const Cart = () => {
                                         {item.quantity}
                                     </Button>
                                     <Button
+                                        onClick={() => incrementQuantity(item._id)}
                                         size={"icon"}
                                         className="rounded-full bg-orange hover:bg-hoverOrange"
                                         variant={"outline"}
@@ -80,7 +79,7 @@ const Cart = () => {
                             </TableCell>
                             <TableCell>{item.price * item.quantity}</TableCell>
                             <TableCell className="text-right">
-                                <Button size={"sm"} className="bg-button hover:bg-hoverOrange">
+                                <Button onClick={() => removeFromTheCart(item._id)} size={"sm"} className="bg-button hover:bg-hoverOrange">
                                     Remove
                                 </Button>
                             </TableCell>
@@ -90,7 +89,7 @@ const Cart = () => {
                 <TableFooter>
                     <TableRow className="text-2xl font-bold">
                         <TableCell colSpan={5}>Total</TableCell>
-                        <TableCell className="text-right">200</TableCell>
+                        <TableCell className="text-right">{totalAmount}</TableCell>
                     </TableRow>
                 </TableFooter>
             </Table>

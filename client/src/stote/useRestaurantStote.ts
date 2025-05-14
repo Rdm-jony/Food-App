@@ -21,6 +21,7 @@ export type MenuItem = {
     price: number;
     image: string;
     restaurantName: string;
+    restaurantId:string;
 }
 
 export type RestaurantState = {
@@ -30,7 +31,7 @@ export type RestaurantState = {
     getRestaurantListName: () => Promise<void>;
     getRestaurant: () => Promise<void>;
     searchedRestaurant: Restaurant[];
-    // appliedFilter: string[];
+    appliedFilter: string[];
     singleRestaurant: Restaurant | null,
     // restaurantOrder: Orders[],
     createRestaurant: (formData: FormData) => Promise<void>;
@@ -39,8 +40,8 @@ export type RestaurantState = {
     searchRestaurant: (searchText: string, searchQuery: string, selectedCuisines: unknown[]) => Promise<void>;
     // addMenuToRestaurant: (menu: MenuItem) => void;
     // updateMenuToRestaurant: (menu: MenuItem) => void;
-    // setAppliedFilter: (value: string) => void;
-    // resetAppliedFilter: () => void;
+    setAppliedFilter: (value: string) => void;
+    resetAppliedFilter: () => void;
     getRestaurantById: (restaurantId: string) => Promise<void>;
     // getRestaurantOrders: () => Promise<void>;
     // updateRestaurantOrder: (orderId: string, status: string) => Promise<void>;
@@ -52,6 +53,7 @@ export const useRestaurantStore = create<RestaurantState>()(persist((set) => ({
     loading: false,
     restaurant: [],
     searchedRestaurant: [],
+    appliedFilter: [],
     singleRestaurant: null,
     retaurantnameList: [],
     createRestaurant: async (formData: FormData) => {
@@ -192,7 +194,19 @@ export const useRestaurantStore = create<RestaurantState>()(persist((set) => ({
             set({ loading: false });
         }
     },
+    setAppliedFilter: (value: string) => {
+        set((state) => {
+            const isAlreadyApplied = state.appliedFilter.includes(value);
+            const updatedFilter = isAlreadyApplied ? state.appliedFilter.filter((item) => item !== value) : [...state.appliedFilter, value];
+            return { appliedFilter: updatedFilter }
+        })
+    },
+    resetAppliedFilter: () => {
+        set({ appliedFilter: [] })
+    }
 }), {
     name: 'restaurant-name',
     storage: createJSONStorage(() => localStorage)
 }))
+
+

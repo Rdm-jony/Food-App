@@ -1,10 +1,11 @@
 import { useRestaurantStore } from "@/stote/useRestaurantStote";
 import AvailableMenu from "./AvailableMenu";
 import { Badge } from "./ui/badge";
-import { Timer } from "lucide-react";
-import { useParams } from "react-router-dom";
+import { PlusCircleIcon, Timer } from "lucide-react";
+import { Link, useParams } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 import LoadingPage from "./LoadingPage";
+import { Button } from "./ui/button";
 
 
 const RestaurantDetail = () => {
@@ -51,7 +52,16 @@ const RestaurantDetail = () => {
                         </div>
                     </div>
                 </div>
-                <AvailableMenu menus={singleRestaurant?.menus || []} />
+                <div className="flex justify-between items-center">
+                    <AvailableMenu menus={singleRestaurant?.menus || []} />
+                    <Link to={`/admin/addMenu/${singleRestaurant?._id}`}>
+                        <Button className="bg-button hover:bg-hoverOrange"> Add Menu
+
+                            <PlusCircleIcon className="w-5 h-5" />
+
+                        </Button>
+                    </Link>
+                </div>
             </div>
         </div>
     );

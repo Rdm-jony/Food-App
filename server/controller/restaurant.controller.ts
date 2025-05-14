@@ -131,13 +131,14 @@ export const getSingleRestaurant: RequestHandler = async (req: Request, res: Res
         return
     }
 }
-export const getSearchRestaurant: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+export const searchRestaurant: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const searchText = req.params.searchText || "";
-        const searchQuery = req.query.searchQuery || "";
+        let searchText = (req.params.searchText || "").trim();
+        const searchQuery = req.query.searchQuery as string || "";
         const selectedCuisines = (req.query.selectedCuisines as string || "").split(",").filter(cuisine => cuisine);
-        console.log(searchText)
+
         const query: any = {};
+
         if (searchText) {
             query.$or = [
                 { restaurantName: { $regex: searchText, $options: 'i' } },
@@ -151,18 +152,17 @@ export const getSearchRestaurant: RequestHandler = async (req: Request, res: Res
                 { cuisines: { $regex: searchQuery, $options: 'i' } }
             ]
         }
+
         if (selectedCuisines.length > 0) {
             query.cuisines = { $in: selectedCuisines }
         }
+
         const restaurants = await Restaurant.find(query);
-        console.log(restaurants)
         res.status(200).json({
             success: true,
             restaurants
         });
-        return;
-
-
+        return
     } catch (error) {
         console.log(error);
         res.status(500).json({ message: "Internal server error" })

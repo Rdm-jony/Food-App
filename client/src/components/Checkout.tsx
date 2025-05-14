@@ -10,7 +10,10 @@ import { Label } from "./ui/label";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 import { Loader2 } from "lucide-react";
-
+import { useUserStore } from "@/stote/useUserStore";
+import { useOrderStore } from "@/stote/useOrderStore";
+import { useCartStore } from "@/stote/useCartStore";
+import { useRestaurantStore } from "@/stote/useRestaurantStote";
 const Checkout = ({
     open,
     setOpen,
@@ -18,13 +21,17 @@ const Checkout = ({
     open: boolean;
     setOpen: Dispatch<SetStateAction<boolean>>;
 }) => {
+    const { cart } = useCartStore();
+    const { restaurant } = useRestaurantStore();
+    const { createCheckoutSession } = useOrderStore();
+    const { user } = useUserStore();
     const [input, setInput] = useState({
-        name: "",
-        email: "",
-        contact: "",
-        address: "",
-        city: "",
-        country: "",
+        name: user?.fullName || "",
+        email: user?.email || "",
+        contact: user?.contact || "",
+        address: user?.address || "",
+        city: user?.city || "",
+        country: user?.country || "",
     });
 
     const changeEventHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -34,11 +41,32 @@ const Checkout = ({
     const checkoutHandler = async (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         // api implementation start from here
+        createCheckoutSession({
+
+            cartItems: cart.map((item) => ({
+                menuId: item._id,
+                name: item.name,
+                image: item.image,
+                price: item.price.toString(),
+                quantity: item.quantity.toString(),
+                restaurantId: item.restaurantId
+            })),
+            deliveryDetails: {
+                name: input.name,
+                email: input.email,
+                contact: input.contact.toString(),
+                address: input.address,
+                city: input.city,
+                country: input.country
+            },
+
+        })
     };
+
     const loading = false
     return (
         <Dialog open={open} onOpenChange={setOpen}>
-            <DialogContent>
+            <DialogContent className="bg-white">
                 <DialogTitle className="font-semibold">Review Your Order</DialogTitle>
                 <DialogDescription className="text-xs">
                     Double-check your delivery details and ensure everything is in order.
@@ -70,7 +98,7 @@ const Checkout = ({
                     <div>
                         <Label>Contact</Label>
                         <Input
-                            type="text"
+                            type="number"
                             name="contact"
                             value={input.contact}
                             onChange={changeEventHandler}

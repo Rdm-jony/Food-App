@@ -5,6 +5,7 @@ import { generateVerificationCode } from "../utils/generateVerificationCode";
 import { generateToken } from "../utils/generateToken";
 import { sendMailVerification, sendResetPassSuccessEmail, sendResetPasswordEmail, sendWelcomeMail } from "../mailtrap/mailtrap";
 import crypto from "crypto"
+import uploadImageOnCloudinary from "../utils/imageUpload";
 
 
 export const signUp: RequestHandler = async (req: Request, res: Response): Promise<void> => {
@@ -164,13 +165,13 @@ export const checkAuth: RequestHandler = async (req: Request, res: Response): Pr
         const userId = req.userId
         const user = await User.findById(userId).select("-password");
         if (!user) {
-             res.status(404).json({
+            res.status(404).json({
                 success: false,
                 message: 'User not found'
             });
             return;
         };
-         res.status(200).json({
+        res.status(200).json({
             success: true,
             user
         });
@@ -180,5 +181,35 @@ export const checkAuth: RequestHandler = async (req: Request, res: Response): Pr
     }
 
 }
+
+export const updateProfile: RequestHandler = async (req: Request, res: Response): Promise<void> => {
+    try {
+        const { fullName, email, contact, address, city, country } = req.body;
+        console.log(req.body)
+        const userId = req.userId;
+        const user = await User.findById(userId);
+        if (!user) {
+            res.status(404).json({ success: false, message: "User not found" });
+            return;
+        }
+        user.fullName = fullName;
+        user.email = email;
+        user.contact = contact;
+        user.address = address;
+        user.city = city;
+        user.country = country;
+        if (req.file) {
+            user.profileImg = await uploadImageOnCloudinary(req.file)
+        }
+        await user.save();
+        res.status(200).json({ success: true, message: "Profile updated successfully", user });
+    } catch (error) {
+        console.log(error)
+        res.status(500).json({ message: "Internal server error" })
+    }
+}
+
+
+
 
 

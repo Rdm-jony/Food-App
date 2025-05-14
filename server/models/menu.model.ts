@@ -6,7 +6,8 @@ export interface IMenu {
     price: number;
     image: string;
     restaurantName: string
-    user: mongoose.Schema.Types.ObjectId
+    user: mongoose.Schema.Types.ObjectId,
+    restaurantId: mongoose.Schema.Types.ObjectId
 }
 
 export interface IMenuDocument extends IMenu {
@@ -40,6 +41,11 @@ const menuSchema = new mongoose.Schema<IMenuDocument>({
         type: String,
         required: true
 
+    },
+    restaurantId: {
+        type: mongoose.Schema.Types.ObjectId,
+        required: true,
+        ref: "Restaurant"
     }
 }, { timestamps: true });
 

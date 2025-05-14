@@ -6,7 +6,7 @@ import mongoose, { Types } from "mongoose";
 
 export const addMenu: RequestHandler = async (req: Request, res: Response): Promise<void> => {
     try {
-        const { name, description, price, restaurantName } = req.body;
+        const { name, description, price, restaurantName, restaurantId } = req.body;
         if (!req.file) {
             res.status(400).json({
                 success: false,
@@ -22,7 +22,8 @@ export const addMenu: RequestHandler = async (req: Request, res: Response): Prom
             description,
             price,
             image: imageUrl,
-            restaurantName
+            restaurantName,
+            restaurantId
         });
         const restaurant = await Restaurant.findOne({ user: req.userId, restaurantName });
         if (restaurant) {

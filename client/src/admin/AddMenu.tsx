@@ -25,10 +25,11 @@ import EditMenu from "./EditMenu";
 import { useRestaurantStore } from "@/stote/useRestaurantStote";
 import { useMenuStore } from "@/stote/useMenuStore";
 import AvailableMenuAdmin from "./AvailableMenuAdmin";
-
+import { useParams } from "react-router-dom";
 
 
 const AddMenu = () => {
+    const { restaurantId } = useParams()
     const { createMenu, getMenu, groupMenus } = useMenuStore()
     const { getRestaurantListName, retaurantnameList } = useRestaurantStore()
     const [input, setInput] = useState<MenuFormSchema>({
@@ -37,6 +38,7 @@ const AddMenu = () => {
         price: 0,
         image: undefined,
         restaurantName: "",
+        restaurantId: restaurantId!
     });
     const [open, setOpen] = useState<boolean>(false);
     const [editOpen, setEditOpen] = useState<boolean>(false);
@@ -62,10 +64,11 @@ const AddMenu = () => {
         formData.append("description", input.description);
         formData.append("price", input.price.toString());
         formData.append("restaurantName", input.restaurantName);
+        formData.append("restaurantId", restaurantId!);
         if (input.image) {
             formData.append("imageMenu", input.image);
         }
-        console.log(input)
+        console.log()
         await createMenu(formData)
 
     };
